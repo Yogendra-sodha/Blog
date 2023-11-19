@@ -91,7 +91,7 @@ def admin_required(f):
 
 
 # Registeration route
-@app.route("/abcd", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 @app.route("/register", methods=["GET","POST"])
 def register():
     register_form = RegisterForm()
