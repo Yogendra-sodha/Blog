@@ -18,14 +18,14 @@ class blogForm(FlaskForm):
 # Registration form for new user
 class RegisterForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired()])
-    email = StringField("Email-ID", validators=[InputRequired()])
+    email = EmailField("Email-ID", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Register")
 
 
 # Login form:
 class LoginForm(FlaskForm):
-    email = EmailField("Email-ID", validators=[InputRequired(), Email()])
+    email = EmailField("Email-ID", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Log in")
 
