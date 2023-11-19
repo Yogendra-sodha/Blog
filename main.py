@@ -11,15 +11,21 @@ from flask_login import LoginManager, UserMixin, login_required, \
 from form import RegisterForm,blogForm, LoginForm, CommentForm
 import datetime
 import os
-import smtplib
+from flask_mail import Mail, Message
 from dotenv import load_dotenv
 load_dotenv()
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FK')
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'yssodhas@gmail.com'
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_AUTH')
 
 Bootstrap5(app)
+mail = Mail(app)
 
 db = SQLAlchemy()
 # CONNECT TO DB
@@ -259,17 +265,13 @@ def contact():
         print("email sent")
         return render_template("contact.html", logged_in = current_user)
     return render_template("contact.html", logged_in = current_user)
-    
+
 def send_email(name,email,phone,message):
-    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-    OWN_EMAIL = "yssodhas@gmail.com"
-    OWN_PASSWORD = os.environ.get("EMAIL_AUTH")
+    msg = Message("New Message", sender="yssodhas@gmail.com", recipients=["yssodhas@gmail.com"])
+    msg.body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}"
     try:
-        with smtplib.SMTP("smtp.gmail.com") as connection:
-            connection.starttls()
-            connection.login(user=OWN_EMAIL, password=OWN_PASSWORD)
-            connection.sendmail(email, OWN_EMAIL, email_message)
-            connection.close()
+        with app.app_context():
+            mail.send(msg)
     except Exception as e:
         print(f"Error message as {str(e)}")
 
