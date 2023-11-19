@@ -27,3 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
         scrollPos = currentTop;
     });
 })
+
+window.addEventListener('load', function () {
+    var loader = document.getElementById('loader-wrapper');
+    loader.style.display = 'none';
+});

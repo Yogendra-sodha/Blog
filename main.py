@@ -11,6 +11,7 @@ from flask_login import LoginManager, UserMixin, login_required, \
 from form import RegisterForm,blogForm, LoginForm, CommentForm
 import datetime
 import os
+import smtplib
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -90,7 +91,7 @@ def admin_required(f):
 
 
 # Registeration route
-@app.route("/", methods=["GET", "POST"])
+@app.route("/abcd", methods=["GET", "POST"])
 @app.route("/register", methods=["GET","POST"])
 def register():
     register_form = RegisterForm()
@@ -246,9 +247,28 @@ def delete_comment(id):
 def about():
     return render_template("about.html", logged_in = current_user)
 
-@app.route("/contact")
+@app.route("/contact", methods=["POST","GET"])
 def contact():
+    if request.method == "POST":
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        message = request.form['message']
+        print(name,email)
+        send_email(name,email,phone,message)
+        flash("Email Sent")
+        return render_template("contact.html", logged_in = current_user)
     return render_template("contact.html", logged_in = current_user)
+    
+def send_email(name,email,phone,message):
+    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
+    OWN_EMAIL = "yssodhas@gmail.com"
+    OWN_PASSWORD = os.environ.get("EMAIL_AUTH")
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(user=OWN_EMAIL, password=OWN_PASSWORD)
+        connection.sendmail(email, OWN_EMAIL, email_message)
+        connection.close()
 
 @app.route("/logout")
 def logout():
@@ -256,4 +276,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
