@@ -256,7 +256,7 @@ def contact():
         message = request.form['message']
         print(name,email)
         send_email(name,email,phone,message)
-        flash("Email Sent")
+        print("email sent")
         return render_template("contact.html", logged_in = current_user)
     return render_template("contact.html", logged_in = current_user)
     
@@ -264,11 +264,14 @@ def send_email(name,email,phone,message):
     email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
     OWN_EMAIL = "yssodhas@gmail.com"
     OWN_PASSWORD = os.environ.get("EMAIL_AUTH")
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.starttls()
-        connection.login(user=OWN_EMAIL, password=OWN_PASSWORD)
-        connection.sendmail(email, OWN_EMAIL, email_message)
-        connection.close()
+    try:
+        with smtplib.SMTP("smtp.gmail.com") as connection:
+            connection.starttls()
+            connection.login(user=OWN_EMAIL, password=OWN_PASSWORD)
+            connection.sendmail(email, OWN_EMAIL, email_message)
+            connection.close()
+    except Exception as e:
+        print(f"Error message as {str(e)}")
 
 @app.route("/logout")
 def logout():
