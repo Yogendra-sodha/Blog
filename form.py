@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField, EmailField, PasswordField
-from wtforms.validators import InputRequired, URL, Email
+from wtforms.validators import InputRequired, URL
 from flask_ckeditor import CKEditorField
 
 
@@ -18,7 +18,7 @@ class blogForm(FlaskForm):
 # Registration form for new user
 class RegisterForm(FlaskForm):
     name = StringField("Name", validators=[InputRequired()])
-    email = EmailField("Email-ID", validators=[InputRequired(), Email()])
+    email = StringField("Email-ID", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Register")
 
